@@ -134,27 +134,4 @@ resume-screener/
 
 ---
 
-## 🎥 Video Script (2–3 min)
-
-**Intro:**  
-“Hi, this is my AI Resume Screener Agent built using Streamlit, Groq Llama 3, and LangChain.”
-
-**1. Upload JD:**  
-“I can paste the job description or upload a JD PDF.”
-
-**2. Upload resumes:**  
-“I upload multiple PDF resumes.”
-
-**3. Screening:**  
-“After clicking ‘Screen Resumes’, the system extracts resume text, compares it with the JD, and generates structured scoring using Llama 3.”
-
-**4. Ranking:**  
-“It sorts candidates by final score using a weighted formula.”
-
-**5. Reports:**  
-“Each candidate gets a detailed HR summary, strengths, gaps, and a recommendation.”
-
-**Outro:**  
-“This tool reduces manual effort and improves hiring quality. Thank you.”
-
----
+https://resume-screener-agent-o4kye9olujldrq4se9zjzb.streamlit.app
