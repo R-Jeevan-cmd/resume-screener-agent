@@ -1,0 +1,26 @@
+Software Engineer – AI/ML
+
+Required Skills:
+- Python
+- Machine Learning
+- NLP
+- SQL
+- Git
+- REST APIs
+
+Preferred Skills:
+- Streamlit
+- Docker
+- AWS
+
+Experience:
+2+ years
+
+Education:
+Bachelor's degree in Computer Science, Artificial Intelligence, or related field.
+
+Responsibilities:
+- Build AI-powered applications.
+- Develop REST APIs.
+- Work with LLMs and NLP models.
+- Collaborate with cross-functional teams.

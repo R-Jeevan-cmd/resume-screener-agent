@@ -1,62 +1,120 @@
 import os
+import streamlit as st
 from dotenv import load_dotenv
-load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"))
 
 from groq import Groq
-from utils import fix_json, extract_pdf_text
+from modules.helpers import fix_json
+from modules.scorer import semantic_similarity, compute_final_score
 
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+load_dotenv()
+
+try:
+    api_key = st.secrets["GROQ_API_KEY"]
+except Exception:
+    api_key = os.getenv("GROQ_API_KEY")
+
+client = Groq(api_key=api_key)
 
 # Build input prompt for Llama 3
 def build_prompt(jd_text, resume_text):
     return f"""
-You are an AI resume screening expert.
+You are a Senior Technical Recruiter with 15+ years of hiring experience.
 
-Compare this Resume with this Job Description and return ONLY valid JSON:
+Your task is to compare the Resume with the Job Description and score the candidate realistically.
 
-JOB DESCRIPTION:
+SCORING RULES:
+
+Skill Match (0-100)
+- 90-100 = Candidate matches almost every required skill.
+- 70-89 = Candidate matches most required skills.
+- 50-69 = Candidate matches around half.
+- 20-49 = Candidate has few relevant skills.
+- 0-19 = Almost no matching skills.
+
+Experience Match (0-100)
+- Score based on relevant projects, internships, work experience, technologies used, certifications and education.
+- Freshers with excellent relevant projects should receive between 60 and 80.
+- Experienced candidates may receive 80-100.
+
+Return ONLY valid JSON.
+
+{{
+    "skill_match": 85,
+    "experience_match": 72,
+    "fit_level":"Excellent",
+    "strengths":[
+        "..."
+    ],
+    "gaps":[
+        "..."
+    ],
+    "recommendation":"Highly Recommended",
+    "summary":"..."
+}}
+
+JOB DESCRIPTION
+----------------
 {jd_text}
 
-RESUME:
+RESUME
+----------------
 {resume_text}
-
-Respond in this JSON format:
-{{
-  "skill_match": 0-100,
-  "experience_match": 0-100,
-  "jd_relevance": 0-100,
-  "fit_level": "Strong/Medium/Weak",
-  "strengths": ["..."],
-  "gaps": ["..."],
-  "recommendation": "Interview/Hold/Reject",
-  "summary": "Short HR explanation"
-}}
 """
-
-# Weighted scoring
-def compute_final_score(skill, exp, jd):
-    score = (0.5 * skill) + (0.3 * exp) + (0.2 * jd)
-    return int(round(score))
 
 # Main function to screen one resume
 def screen_resume(jd_text, resume_text):
+
     prompt = build_prompt(jd_text, resume_text)
 
     response = client.chat.completions.create(
         model="llama-3.1-8b-instant",
-        messages=[{"role":"user","content":prompt}],
-        temperature=0.3
+        messages=[
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        temperature=0.2
     )
-    
+
     raw = response.choices[0].message.content
+
     data = fix_json(raw)
 
-    # Clamp numeric values
-    skill = max(0, min(100, data.get("skill_match", 0)))
-    exp = max(0, min(100, data.get("experience_match", 0)))
-    jd_rel = max(0, min(100, data.get("jd_relevance", 0)))
+    # -------------------------
+    # LLM Scores
+    # -------------------------
 
-    final_score = compute_final_score(skill, exp, jd_rel)
+    skill = max(
+        0,
+        min(100, data.get("skill_match", 0))
+    )
 
+    experience = max(
+        0,
+        min(100, data.get("experience_match", 0))
+    )
+
+    # -------------------------
+    # REAL NLP Similarity
+    # -------------------------
+
+    semantic_score = semantic_similarity(
+        jd_text,
+        resume_text
+    )
+
+    # -------------------------
+    # Weighted Final Score
+    # -------------------------
+
+    final_score = compute_final_score(
+        skill,
+        experience,
+        semantic_score
+    )
+
+    data["semantic_score"] = semantic_score
     data["final_score"] = final_score
+
     return data

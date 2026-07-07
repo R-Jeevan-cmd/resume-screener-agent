@@ -1,137 +1,353 @@
 # 🤖 AI Resume Screener Agent
 
-The **AI Resume Screener Agent** automatically evaluates multiple resumes against a given Job Description (JD).  
-It uses **Groq Llama 3**, **LangChain**, **Streamlit**, and **Python** to generate:
+> **AI-powered Resume Screening & Candidate Ranking System** built for the **Rooman AI – Junior AI Research Associate (24-Hour AI Agent Challenge)**.
 
-- Match Score (0–100)
-- Fit Level (Strong / Medium / Weak)
-- Strengths & Gaps
-- Final Recommendation (Interview / Hold / Reject)
-- HR-friendly summary explanation
-- Ranked shortlist table
+The AI Resume Screener Agent automatically evaluates and ranks multiple resumes against a Job Description (JD) using **Groq Llama 3.1** and **Sentence Transformers**.
 
-This tool reduces hours of manual resume screening and improves consistency in hiring.
+Instead of simple keyword matching, the agent combines **LLM reasoning** with **semantic similarity (embeddings)** to produce transparent candidate rankings, hiring recommendations, strengths, skill gaps, and downloadable reports.
 
 ---
 
-## 🚀 Features
+# 🚀 Features
 
-### ✔ Resume Evaluation
-- Skill match score (0–100)  
-- Experience match score (0–100)  
-- JD relevance (0–100)  
-- Fit Level: **Strong / Medium / Weak**  
-- Strengths (bullet points)  
-- Gaps / missing skills  
-- Final recommendation  
-- HR summary paragraph  
+## 📄 Resume Processing
 
-### ✔ System Features
-- Upload **one JD** (text or PDF)
-- Upload **multiple resumes** (PDF)
-- Ranks candidates automatically
-- Download CSV with results
-- (Optional) Sync results to Google Sheets
+- Upload Job Description (Text or PDF)
+- Upload multiple resumes (PDF)
+- Automatic PDF text extraction
+- AI-powered resume evaluation
+- Handles multiple resumes in one run
 
 ---
 
-## 🧠 Architecture Overview
+## 🧠 AI Capabilities
 
-User → Streamlit UI → Resume + JD → Screening Logic → Groq Llama 3 → Results → Ranking → Display/Export
-
-### 1. **User**
-Uploads JD + multiple resumes.
-
-### 2. **Streamlit Frontend**
-- Sends text to backend
-- Displays ranked results & reports
-
-### 3. **Agent Logic (LangChain + Python)**
-- Extracts text from PDFs  
-- Builds structured prompt  
-- Normalizes JSON output  
-- Uses scoring formula  
-- Ranks candidates  
-
-### 4. **LLM Layer (Groq Llama 3)**
-- Compares resume vs JD  
-- Returns structured JSON analysis  
-
-### 5. **Data Layer**
-- pandas → ranking table + CSV  
-- Optional: Google Sheets  
+- Skill Match Score
+- Experience Match Score
+- Semantic Similarity Score
+- Weighted Final Score
+- Candidate Ranking
+- AI-generated Strengths
+- AI-generated Skill Gaps
+- Hiring Recommendation
+- HR Summary
 
 ---
 
-## 🧮 Ranking Formula
+# 📊 Dashboard
+
+The Streamlit dashboard provides:
+
+- 👥 Total Candidates
+- 📈 Average Score
+- 🏆 Highest Score
+- ✅ Recommended Candidates
+
+It also displays:
+
+- Ranked Candidate Table
+- Individual Candidate Reports
+- Score Distribution Chart
+- Downloadable Ranked CSV
+
+---
+
+# 🧮 Scoring Methodology
+
+Unlike traditional ATS systems that rely only on keyword matching, this project combines **LLM reasoning** with **embedding-based semantic similarity**.
+
+## Weighted Formula
+
+```
 Final Score =
-(0.5 × Skill Match) +
-(0.3 × Experience Match) +
-(0.2 × JD Relevance)
-
-This weights **skills** highest, reflecting real-world hiring priorities.
-
----
-
-## 🧰 Tech Stack
-
-- **Python 3**
-- **Streamlit** (UI)
-- **Groq Llama 3** (LLM)
-- **LangChain** (prompt/agent logic)
-- **PyPDF2** (resume extraction)
-- **pandas** (tables + CSV)
-- **gspread** (optional Google Sheets)
-- **chromadb** (future embeddings)
+50% Skill Match
++30% Experience Match
++20% Semantic Similarity
+```
 
 ---
 
-## ⚙️ Setup Instructions
+## Semantic Similarity
 
-### 1. Install dependencies
-pip install -r requirements.txt
+Uses:
 
-### 2. Add your Groq key  
-Create a `.env` file:
-GROQ_API_KEY=your_key_here
+- Sentence Transformers
+- Model: all-MiniLM-L6-v2
+- Cosine Similarity
 
-### 3. Run the app
-streamlit run app.py
+This enables matching based on **meaning**, not just exact keywords.
 
 ---
 
-## 📂 Project Structure
+# 🧠 AI Workflow
 
-resume-screener/
+```
+                Job Description
+                       │
+                       ▼
+              Resume Upload (PDFs)
+                       │
+                       ▼
+             PDF Text Extraction
+                       │
+                       ▼
+            Groq Llama 3.1 Analysis
+                       │
+      ┌────────────────┼────────────────┐
+      │                │                │
+ Skill Match    Experience Match   Strengths & Gaps
+      │                │                │
+      └────────────────┼────────────────┘
+                       │
+                       ▼
+      Sentence Transformer Embeddings
+                       │
+                       ▼
+          Semantic Similarity Score
+                       │
+                       ▼
+            Weighted Final Scoring
+                       │
+                       ▼
+            Candidate Ranking Engine
+                       │
+                       ▼
+          Streamlit Recruitment Dashboard
+                       │
+                       ▼
+               CSV Report Generation
+```
+
+---
+
+# 🛠 Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| Language | Python 3 |
+| Frontend | Streamlit |
+| LLM | Groq Llama 3.1 |
+| NLP | Sentence Transformers |
+| Similarity | Cosine Similarity |
+| Machine Learning | scikit-learn |
+| PDF Parsing | PyPDF2 |
+| Data Processing | pandas |
+| Visualization | matplotlib |
+
+---
+
+# 📂 Project Structure
+
+```
+resume-screener-agent/
+
 │── app.py
 │── resume_screener.py
 │── utils.py
 │── requirements.txt
 │── README.md
-│── sample_resumes/
-│── sample_jd/
+│── .env.example
+│
+├── assets/
+│   └── architecture.png
+│
+├── data/
+│   ├── sample_jd/
+│   └── sample_resumes/
+│
+├── modules/
+│   ├── parser.py
+│   ├── scorer.py
+│   └── helpers.py
+│
+├── output/
+│   └── sample_ranked_candidates.csv
+│
+└── screenshots/
+```
 
 ---
 
-## 📤 Export Options
-- Download CSV  
-- Optional: Sync to Google Sheets  
+# ⚙️ Installation
+
+## 1. Clone Repository
+
+```bash
+git clone https://github.com/YOUR_USERNAME/resume-screener-agent.git
+
+cd resume-screener-agent
+```
 
 ---
 
-## 🚧 Limitations
-- Very messy PDFs may reduce extraction accuracy  
-- Depends on prompt honesty by LLM  
-- Not a full Applicant Tracking System  
+## 2. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
 
 ---
 
-## 🚀 Future Improvements
-- Add embeddings (Chroma / FAISS)
-- Multi-JD support (multiple roles)
-- Automated email notifications  
-- ATS integration  
+## 3. Configure Environment Variables
+
+Create a `.env` file.
+
+```env
+GROQ_API_KEY=your_groq_api_key
+```
 
 ---
+
+## 4. Run the Application
+
+```bash
+streamlit run app.py
+```
+
+The application opens automatically in your browser.
+
+---
+
+# 📋 Sample Workflow
+
+1. Upload a Job Description.
+2. Upload one or more candidate resumes.
+3. AI analyzes every resume.
+4. Semantic similarity is calculated.
+5. Weighted scores are computed.
+6. Candidates are ranked.
+7. Download the ranked CSV report.
+
+---
+
+# 📤 Output
+
+For every candidate, the system generates:
+
+- Final Score
+- Skill Match
+- Experience Match
+- Semantic Similarity
+- Fit Level
+- Strengths
+- Skill Gaps
+- Recommendation
+- AI Summary
+
+The application also exports:
+
+```
+ranked_candidates.csv
+```
+
+---
+
+# 🎯 Design Decisions
+
+### Why Groq Llama 3.1?
+
+- Fast inference
+- High-quality reasoning
+- Low latency
+- Cost effective
+
+### Why Sentence Transformers?
+
+Traditional keyword matching fails when wording differs.
+
+Sentence Transformers compare the **meaning** between resumes and the Job Description, resulting in more reliable candidate ranking.
+
+### Why Combine Both?
+
+The LLM provides:
+
+- HR reasoning
+- Strengths
+- Skill gaps
+- Hiring recommendation
+
+Sentence Transformers provide:
+
+- Objective semantic similarity
+
+Combining both produces more explainable and consistent rankings.
+
+---
+
+# ⚠️ Limitations
+
+- Supports text-based PDF resumes.
+- Scanned PDFs require OCR.
+- LLM responses may vary slightly.
+- Sequential processing for simplicity.
+
+---
+
+# 🚀 Future Improvements
+
+- DOCX support
+- OCR for scanned resumes
+- FAISS / ChromaDB integration
+- ATS Integration
+- Batch processing
+- Interview Question Generator
+- Email Notifications
+- Recruiter Analytics Dashboard
+- Multi-role Resume Comparison
+
+---
+
+# 📸 Screenshots
+
+Include screenshots inside the `screenshots/` folder.
+
+Example:
+
+- Home Page
+- Resume Upload
+- Ranked Candidates
+- Candidate Reports
+- Dashboard
+- CSV Export
+
+---
+
+# 🌐 Live Demo
 
 https://resume-screener-agent-o4kye9olujldrq4se9zjzb.streamlit.app
+
+---
+
+# 📄 Challenge Deliverables
+
+✔ Working AI Resume Screening Agent
+
+✔ Multiple Resume Support
+
+✔ Job Description Matching
+
+✔ Semantic NLP Similarity
+
+✔ Candidate Ranking
+
+✔ CSV Export
+
+✔ Public GitHub Repository
+
+✔ Sample Inputs
+
+✔ Sample Outputs
+
+✔ README Documentation
+
+✔ Design Trade-offs
+
+---
+
+# 👨‍💻 Author
+
+**R Jeevan**
+
+B.E. Computer Science & Engineering (AI & ML)
+
+Built for the **Rooman AI – Junior AI Research Associate (24-Hour AI Agent Challenge)**.
