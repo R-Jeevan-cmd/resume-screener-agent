@@ -314,7 +314,7 @@ Example:
 
 # 🌐 Live Demo
 
-https://resume-screener-agent-o4kye9olujldrq4se9zjzb.streamlit.app
+https://resume-screener-agent-a3l4nho4fx5btnx9vrsnba.streamlit.app
 
 ---
 
