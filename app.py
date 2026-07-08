@@ -3,7 +3,7 @@ import pandas as pd
 import time
 import matplotlib.pyplot as plt
 
-from utils import extract_pdf_text
+from modules.helpers import extract_pdf_text
 from resume_screener import screen_resume
 
 st.set_page_config(
