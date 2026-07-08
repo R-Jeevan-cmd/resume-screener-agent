@@ -143,7 +143,6 @@ resume-screener-agent/
 
 │── app.py
 │── resume_screener.py
-│── utils.py
 │── requirements.txt
 │── README.md
 │── .env.example
